@@ -1,5 +1,304 @@
 #include "Addresses/Address.hpp"
 
+#include <string>
+#include <regex>
+#include <sstream>
+#include <map>
+#include <algorithm>
+
 namespace Addresses {
 
+	// constructors
+	Address::Address(std::string   street,
+		std::string   city,
+		const std::string & stateCode,
+		const std::string & zip) {
+
+		// set the street and city
+		this->street(street);
+		this->city(city);
+
+		// try to set the state and zip
+		try {
+			this->state(stateCode);
+			this->zipCode(zip);
+		}
+		catch (StateCodeException & ex) {
+			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+		catch (ZipCodeException & ex) {
+			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+	}
+
+	Address::Address(std::string      street,
+		std::string      city,
+		const std::string &    stateCode,
+		unsigned long    zip) {
+
+		// set the street and city
+		this->street(street);
+		this->city(city);
+
+		// try to set the state and zip
+		try {
+			this->state(stateCode);
+			this->zipCode(zip);
+		}
+		catch (StateCodeException & ex) {
+			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+		catch (ZipCodeException & ex) {
+			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+	}
+
+	/****************************
+	* Modifier section
+	*****************************/
+	Address &   Address::street(std::string     numbersAndName) noexcept {
+		_street = numbersAndName;
+
+		return *this;
+	}
+	Address &   Address::city(std::string     name) noexcept {
+		_city = name;
+
+		return *this;
+	}
+	// Must be a valid two digit code, state name, or standard state abbreviation
+	Address &   Address::state(std::string     code) {
+
+		// map containing the state codes and their names
+		std::map<std::string, std::string> states = 
+		{
+			{ "AL","Alabama" },
+			{ "AK","Alaska" },
+			{ "AZ","Arizona" },
+			{ "AR","Arkansas" },
+			{ "CA","California" },
+			{ "CO","Colorado" },
+			{ "CT","Connecticut" },
+			{ "DE","Delaware" },
+			{ "FL","Florida" },
+			{ "GA","Georgia" },
+			{ "HI","Hawaii" },
+			{ "ID","Idaho" },
+			{ "IL","Illinois" },
+			{ "IN","Indiana" },
+			{ "IA","Iowa" },
+			{ "KS","Kansas" },
+			{ "KY","Kentucky" },
+			{ "LA","Louisiana" },
+			{ "ME","Maine" },
+			{ "MD","Maryland" },
+			{ "MA","Massachusetts" },
+			{ "MI","Michigan" },
+			{ "MN","Minnesota" },
+			{ "MS","Mississippi" },
+			{ "MO","Missouri" },
+			{ "MT","Montana" },
+			{ "NE","Nebraska" },
+			{ "NV","Nevada" },
+			{ "NH","New Hampshire" },
+			{ "NJ","New Jersey" },
+			{ "NM","New Mexico" },
+			{ "NY","New York" },
+			{ "NC","North Carolina" },
+			{ "ND","North Dakota" },
+			{ "OH","Ohio" },
+			{ "OK","Oklahoma" },
+			{ "OR","Oregon" },
+			{ "PA","Pennsylvania" },
+			{ "RI","Rhode Island" },
+			{ "SC","South Carolina" },
+			{ "SD","South Dakota" },
+			{ "TN","Tennessee" },
+			{ "TX","Texas" },
+			{ "UT","Utah" },
+			{ "VT","Vermont" },
+			{ "VA","Virginia" },
+			{ "WA","Washington" },
+			{ "WV","West Virginia" },
+			{ "WI","Wisconsin" },
+			{ "WY","Wyoming" },
+			{ "DC","District of Columbia" },
+		};
+
+		// if the length is 2, it's an abbreviation. Look it up in the map
+		if (code.length() == 2) {
+			std::map<std::string, std::string>::iterator itr = states.find(code);
+
+			// if the key was found
+			if (itr != states.end()) {
+				_state = itr->second;
+			}
+			// throw an exception
+			else {
+				throw StateCodeException("State abbreviation not valid", __LINE__, __func__, __FILE__);
+			}
+		}
+		// it's not an abbreviation, look up the long name and make sure it's valid
+		else {
+			// function to return whether or not the value matches the function parameter supplied
+			auto nameExists = [code](auto value) {
+				return value.second == code;
+			};
+
+			// find the state in the map
+			std::map<std::string, std::string>::iterator itr = std::find_if(states.begin(), states.end(), nameExists);
+
+			// the long name was found in the map
+			if (itr != states.end()) {
+				_state = code; // use as-is
+			}
+			// throw exception
+			else {
+				throw StateCodeException("State name not valid", __LINE__, __func__, __FILE__);
+			}
+		}
+
+		return *this;
+	}
+
+	// Zip code rules:  5 digits, not all are zero and not all are nine, optionally followed
+	// by a hyphen and 4 digits, not all are zero and not all are nine.
+	Address &   Address::zipCode(std::string     code) {
+		// regex to validate the zip code
+		std::regex zipRegex("(?!0{5})(?!9{5})\\d{5}(-(?!0{4})(?!9{4})\\d{4})?");
+
+		// if the match is successful, assign it
+		if (std::regex_match(code, zipRegex)) {
+			_zip = code;
+		}
+		// else, throw exception
+		else {
+			throw ZipCodeException("Invalid zip code string entered", __LINE__, __func__, __FILE__);
+		}
+
+		return *this;
+	}
+	
+	Address &   Address::zipCode(unsigned long   code) {
+		try {
+			// convert to std::string
+			std::string zipStr(std::to_string(code));
+
+			// need to pad the code with 0's if the zip code is less than 10000
+			std::string pad(5 - zipStr.length(), '0');
+			zipStr = pad + zipStr;
+
+			// call std::string version
+			zipCode(zipStr);
+		}
+		catch (ZipCodeException & ) {
+			throw ZipCodeException("Invalid zip code long value entered", __LINE__, __func__, __FILE__);
+		}
+
+		return *this;
+	}
+
+	/********************
+	 * Queries
+	 ********************/
+	std::string Address::street() const noexcept {
+		return _street;
+	}
+	std::string Address::city() const noexcept {
+		return _city;
+	}
+	std::string Address::state() const noexcept {
+		return _state;
+	}
+	std::string Address::zipCode() const noexcept {
+		return _zip;
+	}
+
+	// conversion operator
+	Address::operator std::string() const
+	{
+		// use the << operator to produce a stringstream
+		std::ostringstream oss;
+		oss << *this;
+
+		// return the string representation
+		return oss.str();
+	}
+
+	/***********************
+	* stream operators
+	**********************/
+	// << operator overload
+	std::ostream & operator<< (std::ostream & s, const Address & address) {
+		// construct the string from each field
+		s << address.street() <<
+			address.FIELD_SEPARATOR <<
+			address.city() <<
+			address.FIELD_SEPARATOR <<
+			address.state() <<
+			address.FIELD_SEPARATOR <<
+			address.zipCode();
+
+		return s;
+	}
+
+	// >> operator overload
+	std::istream & operator>> (std::istream & s, Address & address) {
+		using StateCodeException = Address::StateCodeException;
+		using ZipCodeException = Address::ZipCodeException;
+
+		try {
+			std::string street;
+			std::string city;
+			std::string state;
+			std::string zip;		
+
+			std::getline(s, street, Address::FIELD_SEPARATOR);
+			std::getline(s, city, Address::FIELD_SEPARATOR);
+			std::getline(s, state, Address::FIELD_SEPARATOR);
+			std::getline(s, zip, Address::FIELD_SEPARATOR);
+
+			address = Address(street, city, state, zip);
+		}
+		catch (StateCodeException & ex) {
+			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+		catch (ZipCodeException & ex) {
+			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+		}
+
+		return s;
+	}
+
+	/***********************
+	 * comparison operators
+	 **********************/
+	// equals
+	bool operator==(const Address & lhs, const Address & rhs) {
+		return lhs.street() == rhs.street() &&
+			lhs.city() == rhs.city() &&
+			lhs.state() == rhs.state() &&
+			lhs.zipCode() == rhs.zipCode();
+	}
+
+	// not equal
+	bool operator!=(const Address & lhs, const Address & rhs) {
+		return !(lhs == rhs);
+	}
+
+	// less than
+	bool operator< (const Address & lhs, const Address & rhs) {
+		return lhs.street() < rhs.street() &&
+			lhs.city() < rhs.city() &&
+			lhs.state() < rhs.state() &&
+			lhs.zipCode() < rhs.zipCode();
+	}
+
+	// greater than
+	bool operator> (const Address & lhs, const Address & rhs) {
+		return lhs.street() > rhs.street() &&
+			lhs.city() > rhs.city() &&
+			lhs.state() > rhs.state() &&
+			lhs.zipCode() > rhs.zipCode();
+	}
 }

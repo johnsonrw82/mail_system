@@ -150,12 +150,10 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 
 
 
-
-
   /****************************************************************************
   ** Company Verification & Regression Test
   ****************************************************************************/
-  void runCompanyTest()
+  /*void runCompanyTest()
   {
     using namespace Companies;
 
@@ -206,14 +204,14 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     std::cout << "Success:  " << __func__ << "\v\n";
   }  // void runCompanyTest()
 
-
+*/
 
 
 
   /****************************************************************************
   ** Employee Verification & Regression Test
   ****************************************************************************/
-  void runEmployeeTest()
+  /*void runEmployeeTest()
   {
     using namespace Employees;
 
@@ -264,11 +262,9 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     }
 
     std::cout << "Success:  " << __func__ << "\v\n";
-  }  //  void runEmployeeTest()
+  }  //  void runEmployeeTest() */
+
 }// unnamed, anonymous namespace
-
-
-
 
 int main()
 {
@@ -276,20 +272,40 @@ int main()
   {
     const auto seperator = std::string( 80, '=' );
 
+	/*try {
+		Addresses::Address a("ONE", "CITY", "Washington", "98042");
+		std::cout << a << '\n';
+		std::string s = (std::string)a;
+		std::cout << s << '\n';
+		
+		std::stringstream ss;
+		ss << a;
+
+		Addresses::Address a2;
+		ss >> a2;
+
+		std::cout << (a == a2) << '\n';
+	}
+	catch (Addresses::Address::AddressExceptions & ex) {
+		std::cerr << ex.what() << '\n';
+	}*/
+
+	
     runAddressTest();
     std::cout << seperator << '\n';
 
-    runCompanyTest();
-    std::cout << seperator << '\n';
+    //runCompanyTest();
+    //std::cout << seperator << '\n';
 
-    runEmployeeTest();
-    std::cout << seperator << '\n';
+    //runEmployeeTest();
+   // std::cout << seperator << '\n';
 
 
-    std::cout << "Success:  " << __func__ << "\v\n";
+   // std::cout << "Success:  " << __func__ << "\v\n";
   }
   catch( std::exception & ex )
   {
     std::cerr << "\n\nFailure - \n" << ex.what() << "\n\n";
   }
 }
+

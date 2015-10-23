@@ -1,10 +1,11 @@
-#include "Addresses/Address.hpp"
-
 #include <string>
 #include <regex>
 #include <sstream>
+#include <iostream>
 #include <map>
 #include <algorithm>
+
+#include "Addresses/Address.hpp"
 
 namespace Addresses {
 
@@ -23,11 +24,12 @@ namespace Addresses {
 			this->state(stateCode);
 			this->zipCode(zip);
 		}
+		// build up the stack trace
 		catch (StateCodeException & ex) {
-			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw StateCodeException(ex, "", __LINE__, __func__, __FILE__);
 		}
 		catch (ZipCodeException & ex) {
-			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
 		}
 	}
 
@@ -45,11 +47,12 @@ namespace Addresses {
 			this->state(stateCode);
 			this->zipCode(zip);
 		}
+		// build up the stack trace
 		catch (StateCodeException & ex) {
-			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw StateCodeException(ex, "", __LINE__, __func__, __FILE__);
 		}
 		catch (ZipCodeException & ex) {
-			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
 		}
 	}
 
@@ -70,7 +73,7 @@ namespace Addresses {
 	Address &   Address::state(std::string     code) {
 
 		// map containing the state codes and their names
-		std::map<std::string, std::string> states = 
+		const std::map<std::string, std::string> states = 
 		{
 			{ "AL","Alabama" },
 			{ "AK","Alaska" },
@@ -127,10 +130,10 @@ namespace Addresses {
 
 		// if the length is 2, it's an abbreviation. Look it up in the map
 		if (code.length() == 2) {
-			std::map<std::string, std::string>::iterator itr = states.find(code);
+			std::map<std::string, std::string>::const_iterator itr = states.find(code);
 
 			// if the key was found
-			if (itr != states.end()) {
+			if (itr != states.cend()) {
 				_state = itr->second;
 			}
 			// throw an exception
@@ -146,10 +149,10 @@ namespace Addresses {
 			};
 
 			// find the state in the map
-			std::map<std::string, std::string>::iterator itr = std::find_if(states.begin(), states.end(), nameExists);
+			std::map<std::string, std::string>::const_iterator itr = std::find_if(states.cbegin(), states.cend(), nameExists);
 
 			// the long name was found in the map
-			if (itr != states.end()) {
+			if (itr != states.cend()) {
 				_state = code; // use as-is
 			}
 			// throw exception
@@ -164,8 +167,8 @@ namespace Addresses {
 	// Zip code rules:  5 digits, not all are zero and not all are nine, optionally followed
 	// by a hyphen and 4 digits, not all are zero and not all are nine.
 	Address &   Address::zipCode(std::string     code) {
-		// regex to validate the zip code
-		std::regex zipRegex("(?!0{5})(?!9{5})\\d{5}(-(?!0{4})(?!9{4})\\d{4})?");
+		// regex to validate the zip code (raw string delimiter /( )/ )
+		std::regex zipRegex( R"/((?!0{5})(?!9{5})\d{5}(-(?!0{4})(?!9{4})\d{4})?)/" );
 
 		// if the match is successful, assign it
 		if (std::regex_match(code, zipRegex)) {
@@ -191,8 +194,8 @@ namespace Addresses {
 			// call std::string version
 			zipCode(zipStr);
 		}
-		catch (ZipCodeException & ) {
-			throw ZipCodeException("Invalid zip code long value entered", __LINE__, __func__, __FILE__);
+		catch (ZipCodeException & ex) {
+			throw ZipCodeException(ex, "Invalid zip code long value entered", __LINE__, __func__, __FILE__);
 		}
 
 		return *this;
@@ -232,11 +235,11 @@ namespace Addresses {
 	std::ostream & operator<< (std::ostream & s, const Address & address) {
 		// construct the string from each field
 		s << address.street() <<
-			address.FIELD_SEPARATOR <<
+			Address::FIELD_SEPARATOR <<
 			address.city() <<
-			address.FIELD_SEPARATOR <<
+			Address::FIELD_SEPARATOR <<
 			address.state() <<
-			address.FIELD_SEPARATOR <<
+			Address::FIELD_SEPARATOR <<
 			address.zipCode();
 
 		return s;
@@ -253,18 +256,36 @@ namespace Addresses {
 			std::string state;
 			std::string zip;		
 
+			// get the data from the stream, using the appropriate delimiter
 			std::getline(s, street, Address::FIELD_SEPARATOR);
 			std::getline(s, city, Address::FIELD_SEPARATOR);
 			std::getline(s, state, Address::FIELD_SEPARATOR);
 			std::getline(s, zip, Address::FIELD_SEPARATOR);
 
+			// construct the object from the supplied data
 			address = Address(street, city, state, zip);
 		}
 		catch (StateCodeException & ex) {
-			throw StateCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw StateCodeException(ex, "", __LINE__, __func__, __FILE__);
 		}
 		catch (ZipCodeException & ex) {
-			throw ZipCodeException(ex.what(), __LINE__, __func__, __FILE__);
+			throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
+		}
+
+		return s;
+	}
+
+	// pointer stream overloads
+	std::ostream & operator<< (std::ostream & s, const Address * address) {
+		if (address != nullptr) {
+			s << *address;
+		}
+
+		return s;
+	}
+	std::istream & operator>> (std::istream & s, Address * address) {
+		if (address != nullptr) {
+			s >> *address;
 		}
 
 		return s;
@@ -275,10 +296,10 @@ namespace Addresses {
 	 **********************/
 	// equals
 	bool operator==(const Address & lhs, const Address & rhs) {
-		return lhs.street() == rhs.street() &&
+		return lhs.state() == rhs.state() &&
 			lhs.city() == rhs.city() &&
-			lhs.state() == rhs.state() &&
-			lhs.zipCode() == rhs.zipCode();
+			lhs.zipCode().substr(0,5) == rhs.zipCode().substr(0,5) &&
+			lhs.street() == rhs.street();
 	}
 
 	// not equal
@@ -288,17 +309,33 @@ namespace Addresses {
 
 	// less than
 	bool operator< (const Address & lhs, const Address & rhs) {
-		return lhs.street() < rhs.street() &&
+		return lhs.state() < rhs.state() &&
 			lhs.city() < rhs.city() &&
-			lhs.state() < rhs.state() &&
-			lhs.zipCode() < rhs.zipCode();
+			lhs.zipCode().substr(0, 5) < rhs.zipCode().substr(0, 5) &&
+			lhs.street() < rhs.street();
 	}
 
 	// greater than
 	bool operator> (const Address & lhs, const Address & rhs) {
-		return lhs.street() > rhs.street() &&
+		return lhs.state() > rhs.state() &&
 			lhs.city() > rhs.city() &&
-			lhs.state() > rhs.state() &&
-			lhs.zipCode() > rhs.zipCode();
+			lhs.zipCode().substr(0, 5) > rhs.zipCode().substr(0, 5) &&
+			lhs.street() > rhs.street();
+	}
+
+	// less than or equal
+	bool operator<=(const Address & lhs, const Address & rhs) {
+		return lhs.state() <= rhs.state() &&
+			lhs.city() <= rhs.city() &&
+			lhs.zipCode().substr(0, 5) <= rhs.zipCode().substr(0, 5) &&
+			lhs.street() <= rhs.street();
+	}
+
+	// greater than or equal
+	bool operator>=(const Address & lhs, const Address & rhs) {
+		return lhs.state() >= rhs.state() &&
+			lhs.city() >= rhs.city() &&
+			lhs.zipCode().substr(0, 5) >= rhs.zipCode().substr(0, 5) &&
+			lhs.street() >= rhs.street();
 	}
 }

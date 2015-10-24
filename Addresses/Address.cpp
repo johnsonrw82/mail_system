@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <algorithm>
+#include <locale>
 
 #include "Addresses/Address.hpp"
 
@@ -128,8 +129,19 @@ namespace Addresses {
 			{ "DC","District of Columbia" },
 		};
 
+		// conversion functions
+		auto toupper = [](char c) {
+			return std::toupper(c, std::locale());
+		};
+		auto tolower = [](char c) {
+			return std::tolower(c, std::locale());
+		};
+
 		// if the length is 2, it's an abbreviation. Look it up in the map
 		if (code.length() == 2) {
+			// convert to uppercase -- supports input such as "Wa" or "wa"
+			std::transform(code.begin(), code.end(), code.begin(), toupper);
+
 			std::map<std::string, std::string>::const_iterator itr = states.find(code);
 
 			// if the key was found
@@ -143,8 +155,17 @@ namespace Addresses {
 		}
 		// it's not an abbreviation, look up the long name and make sure it's valid
 		else {
+			// convert to first letter capitalized, supporting input such as "WAshington" or "washington"
+			std::transform(code.begin(), code.begin() + 1, code.begin(), toupper);
+			std::transform(code.begin() + 1, code.end(), code.begin() + 1, tolower);
+
 			// function to return whether or not the value matches the function parameter supplied
-			auto nameExists = [code](auto value) {
+			auto nameExists = [code,toupper,tolower](auto value) {
+				// convert the value in map to same format as code
+				std::transform(value.second.begin(), value.second.begin() + 1, value.second.begin(), toupper);
+				std::transform(value.second.begin() + 1, value.second.end(), value.second.begin() + 1, tolower);
+
+				// compare
 				return value.second == code;
 			};
 
@@ -153,7 +174,7 @@ namespace Addresses {
 
 			// the long name was found in the map
 			if (itr != states.cend()) {
-				_state = code; // use as-is
+				_state = itr->second; // use the value pulled from the map
 			}
 			// throw exception
 			else {

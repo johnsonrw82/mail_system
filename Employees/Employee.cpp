@@ -73,12 +73,32 @@ namespace Employees {
 		return *this;
 	}
 	Employee & Employee::firstName(std::string   newName)  noexcept {
-		_firstName = newName;		
+		// find a delimiting comma (just to make sure the name is properly formatted)
+		std::regex nameRegex("([[:space:]]*,[[:space:]]*)");
+
+		// try to match the string using supplied regex
+		if (std::regex_search(newName, nameRegex)) {
+			// call the name modifier instead
+			this->name(newName);
+		}
+		else {
+			_firstName = newName;
+		}
 
 		return *this;
 	}
 	Employee & Employee::lastName(std::string   newName)  noexcept {
-		_lastName = newName;
+		// find a delimiting comma (just to make sure the name is properly formatted)
+		std::regex nameRegex("([[:space:]]*,[[:space:]]*)");		
+
+		// try to match the string using supplied regex
+		if (std::regex_search(newName, nameRegex)) {
+			// call the name modifier instead
+			this->name(newName);
+		}
+		else {
+			_lastName = newName;
+		}
 
 		return *this;
 	}

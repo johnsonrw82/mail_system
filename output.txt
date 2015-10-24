@@ -1,0 +1,55 @@
+157 S. Howard StreetSpokaneWashington99201
+1014 Vine StreetCincinnatiOhio45202-1100
+1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
+8039 Beach BoulevardBuena ParkCalifornia90620
+
+1014 Vine StreetCincinnatiOhio45202-1100
+1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
+157 S. Howard StreetSpokaneWashington99201
+8039 Beach BoulevardBuena ParkCalifornia90620
+
+157 S. Howard StreetSpokaneWashington99201
+1014 Vine StreetCincinnatiOhio45202-1100
+1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
+8039 Beach BoulevardBuena ParkCalifornia90620
+Success:  runAddressTest
+================================================================================
+The Kroger Co
+Albertson's, Inc
+The Walt Disney Company - Disneyland
+Cedar Fair Entertainment Company - Knott's Berry Farm
+CSUF UEE
+
+Albertson's, Inc
+CSUF UEE
+Cedar Fair Entertainment Company - Knott's Berry Farm
+The Kroger Co
+The Walt Disney Company - Disneyland
+
+The Walt Disney Company - Disneyland
+The Kroger Co
+Cedar Fair Entertainment Company - Knott's Berry Farm
+CSUF UEE
+Albertson's, Inc
+Success:  runCompanyTest
+================================================================================
+TomBettens
+WaltDisney
+BjarneStroustrup
+Skywalker
+SherlockHolmes
+
+TomBettens
+WaltDisney
+Skywalker
+BjarneStroustrup
+SherlockHolmes
+
+WaltDisney
+TomBettens
+BjarneStroustrup
+Skywalker
+SherlockHolmes
+Success:  runEmployeeTest
+================================================================================
+Success:  main

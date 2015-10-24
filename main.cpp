@@ -40,10 +40,11 @@
 
 namespace // unnamed, anonymous namespace for internal (local) linkage
 {
-  struct RegressionTestException : Utilities::AbstractException<> { using AbstractException::AbstractException; };              // Regression test exception base class
-  struct   UndetectedException   : RegressionTestException        { using RegressionTestException::RegressionTestException; };  // Inherit base class constructors
-  struct   RelationalTestFailure : RegressionTestException        { using RegressionTestException::RegressionTestException; };
-  struct   SemmetricalIOFailure  : RegressionTestException        { using RegressionTestException::RegressionTestException; };
+  struct RegressionTestException  : Utilities::AbstractException<> { using AbstractException::AbstractException; };              // Regression test exception base class
+  struct   UndetectedException    : RegressionTestException        { using RegressionTestException::RegressionTestException; };  // Inherit base class constructors
+  struct   RelationalTestFailure  : RegressionTestException        { using RegressionTestException::RegressionTestException; };
+  struct   SemmetricalIOFailure   : RegressionTestException        { using RegressionTestException::RegressionTestException; };
+  struct   PropertyValueException : RegressionTestException { using RegressionTestException::RegressionTestException; };         // new exception used to mark when a property is incorrectly set
 
   /****************************************************************************
   ** Address Verification & Regression Test
@@ -83,7 +84,7 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 
 	// verify nothing was changed
 	if (properties[1].state() != "Ohio") {
-		throw RegressionTestException("State should not have been modified", __LINE__, __func__, __FILE__);
+		throw PropertyValueException("State should not have been modified", __LINE__, __func__, __FILE__);
 	}
 
 	// verify abbreviation check
@@ -98,11 +99,11 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 		properties[2].state("WI");  // wisconsin
 		// check if set properly
 		if (properties[2].state() != "Wisconsin") {
-			throw RegressionTestException("State name should have changed", __LINE__, __func__, __FILE__);
+			throw PropertyValueException("State name should have changed", __LINE__, __func__, __FILE__);
 		}
 	}
 	catch (Address::StateCodeException & ex) {
-		throw RegressionTestException(ex, "The state code is valid", __LINE__, __func__, __FILE__);
+		throw PropertyValueException(ex, "The state code is valid", __LINE__, __func__, __FILE__);
 	}
 
 	// verify correct state name
@@ -110,11 +111,33 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 		properties[2].state("District of Columbia");  // DC
 		// check if set properly
 		if (properties[2].state() != "District of Columbia") {
-			throw RegressionTestException("State name should have changed", __LINE__, __func__, __FILE__);
+			throw PropertyValueException("State name should have changed", __LINE__, __func__, __FILE__);
 		}
 	}
 	catch (Address::StateCodeException & ex) {
-		throw RegressionTestException(ex, "The state name is valid", __LINE__, __func__, __FILE__);
+		throw PropertyValueException(ex, "The state name is valid", __LINE__, __func__, __FILE__);
+	}
+
+	try {
+		properties[2].state("Wa");  // correct abbreviation, wrong case
+		// check if set properly
+		if (properties[2].state() != "Washington") {
+			throw PropertyValueException("State name should have changed", __LINE__, __func__, __FILE__);
+		}
+	}
+	catch (Address::StateCodeException & ex) {
+		throw PropertyValueException(ex, "The state name is valid", __LINE__, __func__, __FILE__);
+	}
+
+	try {
+		properties[2].state("alabama");  // AL
+		 // check if set properly
+		if (properties[2].state() != "Alabama") {
+			throw PropertyValueException("State name should have changed", __LINE__, __func__, __FILE__);
+		}
+	}
+	catch (Address::StateCodeException & ex) {
+		throw PropertyValueException(ex, "The state name is valid", __LINE__, __func__, __FILE__);
 	}
 
     // verify zip codes
@@ -125,7 +148,7 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 		properties[0].zipCode("12345-1234");
 	}
 	catch (Address::ZipCodeException & ex) {
-		throw RegressionTestException(ex, "Zip code is valid", __LINE__, __func__, __FILE__);
+		throw PropertyValueException(ex, "Zip code is valid", __LINE__, __func__, __FILE__);
 	}
     
 
@@ -361,12 +384,18 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 	workers[1].name("Smith");
 	// verify first and last name
 	if (workers[1].firstName() != "" && workers[1].lastName() != "Smith") {
-		throw RegressionTestException("Name was not set properly", __LINE__, __func__, __FILE__);
+		throw PropertyValueException("Name was not set properly", __LINE__, __func__, __FILE__);
 	}
 	workers[1].lastName("Jacob").firstName("John");
 	// verify first and last name
 	if (workers[1].firstName() != "John" && workers[1].lastName() != "Jacob") {
-		throw RegressionTestException("Name was not set properly", __LINE__, __func__, __FILE__);
+		throw PropertyValueException("Name was not set properly", __LINE__, __func__, __FILE__);
+	}
+	workers[1].lastName("Clark, Samuel"); // this is an invalid format for last name, 
+										  // but should set the name properly by calling the appropriate modifier under the hood
+	// verify first and last name
+	if (workers[1].firstName() != "Samuel" && workers[1].lastName() != "Clark") {
+		throw PropertyValueException("Name was not set properly", __LINE__, __func__, __FILE__);
 	}
 
     // verify some equality checks
@@ -414,7 +443,7 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 	ss << empPtr1;  // buffer out
 	ss >> empPtr2;  // buffer in
 
-					 // test
+	// test
 	if (*empPtr1 != *empPtr2) {
 		throw SemmetricalIOFailure("Pointer symmetric insertion/extraction failure", __LINE__, __func__, __FILE__);
 	}

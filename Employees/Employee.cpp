@@ -26,7 +26,8 @@ namespace Employees {
 		std::ostringstream oss;
 		oss << this->firstName() <<
 			FIELD_SEPARATOR <<
-			this->lastName();
+			this->lastName() << 
+			RECORD_SEPARATOR;
 
 		return oss.str();
 	}
@@ -125,21 +126,29 @@ namespace Employees {
 		return s;
 	}
 	std::istream & operator>> (std::istream & s, Employee & employee) {
-		std::string lastName;
-		std::string firstName;
+		// record string
+		std::string record;
 
-		// try to get first name first
-		if (std::getline(s, firstName, Employee::FIELD_SEPARATOR)) {
-			// last name if separated by the field separator
-			if (std::getline(s, lastName, Employee::FIELD_SEPARATOR)) {
-				employee = Employee(firstName, lastName);
+		// try to get the record from the stream
+		if (std::getline(s, record, Employee::RECORD_SEPARATOR)) {
+			// convert to stringstream
+			std::stringstream ss(record);
+
+			std::string lastName;
+			std::string firstName;
+
+			// try to get first name first
+			if (std::getline(ss, firstName, Employee::FIELD_SEPARATOR)) {
+				// last name if separated by the field separator
+				if (std::getline(ss, lastName, Employee::FIELD_SEPARATOR)) {
+					employee = Employee(firstName, lastName);
+				}
+				// might be a comma separated name, try it out
+				else {
+					employee = Employee(firstName);
+				}
 			}
-			// might be a comma separated name, try it out
-			else {
-				employee = Employee(firstName);
-			}
-		}		
-	
+		}
 		return s;
 	}
 	// pointer stream operators

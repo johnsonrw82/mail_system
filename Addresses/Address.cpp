@@ -240,7 +240,8 @@ namespace Addresses {
 			Address::FIELD_SEPARATOR <<
 			address.state() <<
 			Address::FIELD_SEPARATOR <<
-			address.zipCode();
+			address.zipCode() <<
+			Address::RECORD_SEPARATOR;
 
 		return s;
 	}
@@ -250,26 +251,34 @@ namespace Addresses {
 		using StateCodeException = Address::StateCodeException;
 		using ZipCodeException = Address::ZipCodeException;
 
-		try {
-			std::string street;
-			std::string city;
-			std::string state;
-			std::string zip;		
+		// record string
+		std::string record;
 
-			// get the data from the stream, using the appropriate delimiter
-			std::getline(s, street, Address::FIELD_SEPARATOR);
-			std::getline(s, city, Address::FIELD_SEPARATOR);
-			std::getline(s, state, Address::FIELD_SEPARATOR);
-			std::getline(s, zip, Address::FIELD_SEPARATOR);
+		// get the record from the stream
+		if (std::getline(s, record, Address::RECORD_SEPARATOR)) {
+			try {
+				// convert record to stream and extract each piece
+				std::stringstream ss(record);
+				std::string street;
+				std::string city;
+				std::string state;
+				std::string zip;
 
-			// construct the object from the supplied data
-			address = Address(street, city, state, zip);
-		}
-		catch (StateCodeException & ex) {
-			throw StateCodeException(ex, "", __LINE__, __func__, __FILE__);
-		}
-		catch (ZipCodeException & ex) {
-			throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
+				// get the data from the stream, using the appropriate delimiter
+				std::getline(ss, street, Address::FIELD_SEPARATOR);
+				std::getline(ss, city, Address::FIELD_SEPARATOR);
+				std::getline(ss, state, Address::FIELD_SEPARATOR);
+				std::getline(ss, zip, Address::FIELD_SEPARATOR);
+
+				// construct the object from the supplied data
+				address = Address(street, city, state, zip);
+			}
+			catch (StateCodeException & ex) {
+				throw StateCodeException(ex, "", __LINE__, __func__, __FILE__);
+			}
+			catch (ZipCodeException & ex) {
+				throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
+			}
 		}
 
 		return s;

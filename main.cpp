@@ -81,10 +81,55 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     }
     catch( Address::StateCodeException &) {} // catch and ignore expected exception type, let all other propagate up
 
+	// verify nothing was changed
+	if (properties[1].state() != "Ohio") {
+		throw RegressionTestException("State should not have been modified", __LINE__, __func__, __FILE__);
+	}
+
+	// verify abbreviation check
+	try {
+		properties[1].state("WS");
+		throw UndetectedException("Undetected Wrong State or State Code", __LINE__, __func__, __FILE__);
+	}
+	catch (Address::StateCodeException &) {}
+
+	// verify correct state setting
+	try {
+		properties[2].state("WI");  // wisconsin
+		// check if set properly
+		if (properties[2].state() != "Wisconsin") {
+			throw RegressionTestException("State name should have changed", __LINE__, __func__, __FILE__);
+		}
+	}
+	catch (Address::StateCodeException & ex) {
+		throw RegressionTestException(ex, "The state code is valid", __LINE__, __func__, __FILE__);
+	}
+
+	// verify correct state name
+	try {
+		properties[2].state("District of Columbia");  // DC
+		// check if set properly
+		if (properties[2].state() != "District of Columbia") {
+			throw RegressionTestException("State name should have changed", __LINE__, __func__, __FILE__);
+		}
+	}
+	catch (Address::StateCodeException & ex) {
+		throw RegressionTestException(ex, "The state name is valid", __LINE__, __func__, __FILE__);
+	}
 
     // verify zip codes
-    properties[0].zipCode(12);
+	// valid
+	try {
+		properties[0].zipCode(12);
+		properties[0].zipCode(12345UL);
+		properties[0].zipCode("12345-1234");
+	}
+	catch (Address::ZipCodeException & ex) {
+		throw RegressionTestException(ex, "Zip code is valid", __LINE__, __func__, __FILE__);
+	}
     
+
+	// invalid
     try
     {
       properties[0].zipCode("ABC");
@@ -120,9 +165,18 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     }
     catch( Address::ZipCodeException & ) {} // catch and ignore expected exception type, let all other propagate up
 
+	try
+	{
+		properties[0].zipCode("12345-12345");
+		throw UndetectedException("Undetected Wrong Zip Code", __LINE__, __func__, __FILE__);
+	}
+	catch (Address::ZipCodeException &) {} // catch and ignore expected exception type, let all other propagate up
 
     // verify some equality checks
     if( properties[0] != properties[0] )  throw RelationalTestFailure( "Equality Failure", __LINE__, __func__, __FILE__ );
+	if( properties[1] == properties[0] ) throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(properties[1] <= properties[1])) throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(properties[1] >= properties[1])) throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
 
     // symmetric insertion and extraction checks
     {
@@ -143,7 +197,35 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
       if (properties[1] != temp)  throw SemmetricalIOFailure("Symmetric Insertion/Extraction Failure", __LINE__, __func__, __FILE__);
     }
 
-    
+    // pointer stream verification
+	std::stringstream ss;
+	Address * addrPtr1 = new Address();
+
+	// initialize a stream with good data
+	ss << properties[2];
+	// use pointer
+	ss >> addrPtr1;
+
+	// verify equality
+	if (*addrPtr1 != properties[2]) {
+		throw RelationalTestFailure("Pointer was not initialized properly", __LINE__, __func__, __FILE__);
+	}
+
+	// now buffer out to another pointer
+	Address * addrPtr2 = new Address();
+	ss.seekg(0);     // reset stream
+	ss << addrPtr1;  // buffer out
+	ss >> addrPtr2;  // buffer in
+
+	// test
+	if (*addrPtr1 != *addrPtr2) {
+		throw SemmetricalIOFailure("Pointer symmetric insertion/extraction failure", __LINE__, __func__, __FILE__);
+	}
+
+	// clean up
+	delete addrPtr1;
+	delete addrPtr2;
+
     std::cout << "Success:  " << __func__ << "\v\n";
   } // void runAddressTest()
 
@@ -179,9 +261,18 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     std::sort( std::begin( companies ), std::end( companies ), Companies::operator> );
     for( const auto & company : companies )  std::cout << company << '\n';
 
+	// test setting name
+	companies[1].name("The ABC Company");
+	if (companies[1].name() != "The ABC Company") {
+		throw RegressionTestException("Company name not set properly", __LINE__, __func__, __FILE__);
+	}
 
     // verify some equality checks
     if( companies[0] != companies[0] )  throw RelationalTestFailure( "Equality Failure", __LINE__, __func__, __FILE__ );
+	if (companies[1] == companies[0])  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(companies[0] <= companies[0]))  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(companies[0] >= companies[0]))  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+
     // symmetric insertion and extraction checks
     {
       std::stringstream s;
@@ -200,6 +291,35 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
 
       if (companies[1] != temp)  throw SemmetricalIOFailure("Symmetric Insertion/Extraction Failure", __LINE__, __func__, __FILE__);
     }
+
+	// pointer stream verification
+	std::stringstream ss;
+	Company * compPtr1 = new Company();
+
+	// initialize a stream with good data
+	ss << companies[2];
+	// use pointer
+	ss >> compPtr1;
+
+	// verify equality
+	if (*compPtr1 != companies[2]) {
+		throw RelationalTestFailure("Pointer was not initialized properly", __LINE__, __func__, __FILE__);
+	}
+
+	// now buffer out to another pointer
+	Company * compPtr2 = new Company();
+	ss.seekg(0);     // reset stream
+	ss << compPtr1;  // buffer out
+	ss >> compPtr2;  // buffer in
+
+	// test
+	if (*compPtr1 != *compPtr2) {
+		throw SemmetricalIOFailure("Pointer symmetric insertion/extraction failure", __LINE__, __func__, __FILE__);
+	}
+
+	// clean up
+	delete compPtr1;
+	delete compPtr2;
 
     std::cout << "Success:  " << __func__ << "\v\n";
   }  // void runCompanyTest()
@@ -237,8 +357,23 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
     for( const auto & worker : workers )  std::cout << worker << '\n';
 
 
+	// check setting names
+	workers[1].name("Smith");
+	// verify first and last name
+	if (workers[1].firstName() != "" && workers[1].lastName() != "Smith") {
+		throw RegressionTestException("Name was not set properly", __LINE__, __func__, __FILE__);
+	}
+	workers[1].lastName("Jacob").firstName("John");
+	// verify first and last name
+	if (workers[1].firstName() != "John" && workers[1].lastName() != "Jacob") {
+		throw RegressionTestException("Name was not set properly", __LINE__, __func__, __FILE__);
+	}
+
     // verify some equality checks
     if( workers[0] != workers[0] )  throw RelationalTestFailure( "Equality Failure", __LINE__, __func__, __FILE__ );
+	if (workers[1] == workers[0])  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(workers[0] <= workers[0]))  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
+	if (!(workers[0] >= workers[0]))  throw RelationalTestFailure("Equality Failure", __LINE__, __func__, __FILE__);
 
     // symmetric insertion and extraction checks
     {
@@ -259,6 +394,35 @@ namespace // unnamed, anonymous namespace for internal (local) linkage
       if (workers[1] != temp)  throw SemmetricalIOFailure("Symmetric Insertion/Extraction Failure", __LINE__, __func__, __FILE__);
     }
 
+	// pointer stream verification
+	std::stringstream ss;
+	Employee * empPtr1 = new Employee();
+
+	// initialize a stream with good data
+	ss << workers[2];
+	// use pointer
+	ss >> empPtr1;
+
+	// verify equality
+	if (*empPtr1 != workers[2]) {
+		throw RelationalTestFailure("Pointer was not initialized properly", __LINE__, __func__, __FILE__);
+	}
+
+	// now buffer out to another pointer
+	Employee * empPtr2 = new Employee();
+	ss.seekg(0);     // reset stream
+	ss << empPtr1;  // buffer out
+	ss >> empPtr2;  // buffer in
+
+					 // test
+	if (*empPtr1 != *empPtr2) {
+		throw SemmetricalIOFailure("Pointer symmetric insertion/extraction failure", __LINE__, __func__, __FILE__);
+	}
+
+	// clean up
+	delete empPtr1;
+	delete empPtr2;
+
     std::cout << "Success:  " << __func__ << "\v\n";
   }  //  void runEmployeeTest() 
 
@@ -269,33 +433,14 @@ int main()
   try
   {
     const auto seperator = std::string( 80, '=' );
-
-	try {
-		Addresses::Address a("ONE", "CITY", "Washington", 99999UL);
-		std::cout << a << '\n';
-		std::string s = (std::string)a;
-		std::cout << s << '\n';
-		
-		std::stringstream ss;
-		ss << a;
-
-		Addresses::Address a2;
-		ss >> a2;
-
-		std::cout << (a == a2) << '\n';
-	}
-	catch (Addresses::Address::AddressExceptions & ex) {
-		std::cerr << ex.what() << '\n';
-	}
-
 	
-    runAddressTest();
+    ::runAddressTest();
     std::cout << seperator << '\n';
 
-    runCompanyTest();
+    ::runCompanyTest();
     std::cout << seperator << '\n';
 
-    runEmployeeTest();
+    ::runEmployeeTest();
     std::cout << seperator << '\n';
 
 

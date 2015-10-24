@@ -44,19 +44,27 @@ namespace Companies {
 	**********************/
 	// reference stream overloads
 	std::ostream & operator<< (std::ostream & s, const Company & company) {
-		s << company.name();
+		s << company.name() <<
+			Company::RECORD_SEPARATOR;
 		return s;
 	}
 	std::istream & operator>> (std::istream & s, Company & company) {
-		std::string name;
+		// record string
+		std::string record;
+		// try to get the record from the stream
+		if (std::getline(s, record, Company::RECORD_SEPARATOR)) {
+			// convert to stringstream
+			std::stringstream ss(record);
 
-		// get the data from the stream using the proper delimiter
-		if (std::getline(s, name, Company::FIELD_SEPARATOR)) {
+			std::string name;
 
-			// construct the company object
-			company = Company(name);
+			// get the data from the stream using the proper delimiter
+			if (std::getline(ss, name, Company::FIELD_SEPARATOR)) {
+
+				// construct the company object
+				company = Company(name);
+			}
 		}
-
 		return s;
 	}
 	// pointer stream overloads

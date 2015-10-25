@@ -1,3 +1,12 @@
+/**
+ * File: Address.cpp
+ * Author: Ryan Johnson
+ * Email: johnsonrw82@csu.fullerton.edu
+ *
+ * Description: This file is the class implementation for an Address class.
+ *				An Address consists of a Street, City, State, and Zip code
+ **/
+
 #include <string>
 #include <regex>
 #include <sstream>

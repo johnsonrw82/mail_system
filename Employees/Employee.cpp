@@ -1,3 +1,12 @@
+/**
+ * File: Employee.cpp
+ * Author: Ryan Johnson
+ * Email: johnsonrw82@csu.fullerton.edu
+ *
+ * Description: This file is the class implementation for an Employee class.
+ *				An Employee consists of a last and (optional) first name.
+ **/
+
 #include <string>
 #include <sstream>
 #include <regex>

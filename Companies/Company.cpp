@@ -1,3 +1,12 @@
+/**
+ * File: Company.cpp
+ * Author: Ryan Johnson
+ * Email: johnsonrw82@csu.fullerton.edu
+ *
+ * Description: This file is the class implementation for a Company class.
+ *				A company consists of a free-text name.
+ **/
+
 #include <string>
 #include <sstream>
 #include <iostream>

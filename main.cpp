@@ -35,6 +35,7 @@
 #include "Companies/Company.hpp"
 #include "Employees/Employee.hpp"
 #include "Utilities/Exceptions.hpp"
+#include "Utilities/Associations.hpp"
 
 
 
@@ -472,6 +473,21 @@ int main()
     ::runEmployeeTest();
     std::cout << seperator << '\n';
 
+	Companies::Company c1, c2;
+	Employees::Employee e1, e2;
+
+	Utilities::Associations<Companies::Company, Employees::Employee, Utilities::One2OnePolicy> EmpComp;
+
+	c1.name("Company 1");
+	c2.name("Company 2");
+	e1.name("Smith, John");
+	e2.name("Hines, Gregory");
+
+	EmpComp.insert(c1, e2);
+	EmpComp.insert(c2, e2);
+
+	Utilities::Associations<Companies::Company, Employees::Employee, Utilities::One2OnePolicy>::LeftCollectionType comps;
+	comps = EmpComp.retrieveLeft();
 
     std::cout << "Success:  " << __func__ << "\v\n";
   }

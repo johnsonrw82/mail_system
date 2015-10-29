@@ -91,7 +91,7 @@ namespace Employees {
 			this->name(newName);
 		}
 		else {
-			_firstName = newName;
+			_firstName = std::move(newName);
 		}
 
 		return *this;
@@ -106,7 +106,7 @@ namespace Employees {
 			this->name(newName);
 		}
 		else {
-			_lastName = newName;
+			_lastName = std::move(newName);
 		}
 
 		return *this;
@@ -154,29 +154,18 @@ namespace Employees {
 
 		return s;
 	}
-	std::istream & operator>> (std::istream & s, Employee & employee) {
-		// record string
-		std::string record;
+	std::istream & operator>> (std::istream & s, Employee & employee) {		
+		std::string lastName, firstName; // first/last name
 
-		// try to get the record from the stream
-		if (std::getline(s, record, Employee::RECORD_SEPARATOR)) {
-			// convert to stringstream
-			std::stringstream ss(record);
-
-			std::string lastName;
-			std::string firstName;
-
-			// try to get first name first
-			if (std::getline(ss, firstName, Employee::FIELD_SEPARATOR)) {
-				// last name if separated by the field separator
-				if (std::getline(ss, lastName, Employee::FIELD_SEPARATOR)) {
-					employee = Employee(firstName, lastName);
-				}
-				// might be a comma separated name, try it out
-				else {
-					employee = Employee(firstName);
-				}
-			}
+		// try to get the first and last name from the stream
+		// last name will have the record separator at the end
+		if (std::getline(s, firstName, Employee::FIELD_SEPARATOR) &&
+			std::getline(s, lastName, Employee::RECORD_SEPARATOR)) {
+			employee = Employee(firstName, lastName);			
+		}
+		// might be a comma separated name, try it out
+		else if (std::getline(s, lastName, Employee::RECORD_SEPARATOR) ) {			
+			employee = Employee(lastName);
 		}
 		return s;
 	}

@@ -43,7 +43,7 @@ namespace Companies {
 	* Modifiers
 	**********************/
 	Company & Company::name(std::string newName)  noexcept {
-		_name = newName;
+		_name = std::move(newName);
 
 		return *this;
 	}
@@ -58,21 +58,12 @@ namespace Companies {
 		return s;
 	}
 	std::istream & operator>> (std::istream & s, Company & company) {
-		// record string
-		std::string record;
-		// try to get the record from the stream
-		if (std::getline(s, record, Company::RECORD_SEPARATOR)) {
-			// convert to stringstream
-			std::stringstream ss(record);
+		// company name
+		std::string name;
 
-			std::string name;
-
-			// get the data from the stream using the proper delimiter
-			if (std::getline(ss, name, Company::FIELD_SEPARATOR)) {
-
-				// construct the company object
-				company = Company(name);
-			}
+		// try to get the name from the stream
+		if (std::getline(s, name, Company::RECORD_SEPARATOR)) {
+			company = Company(name);
 		}
 		return s;
 	}

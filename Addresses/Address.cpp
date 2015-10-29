@@ -18,6 +18,112 @@
 #include "Addresses/Address.hpp"
 
 namespace Addresses {
+	namespace {
+		// class to define the lookup capability for states
+		class StateLookup {
+		public:
+			// map containing state key and full name
+			std::map<std::string, const std::string *> _map;
+			// track locale for performing transforms
+			std::locale _locale;
+
+			// Default constructor
+			StateLookup();
+		private:
+			// state id structure
+			struct StateId {
+				// constructor
+				StateId(const std::string code, const std::string name) : _code(std::move(code)), _name(std::move(name)) {}
+
+				std::string _code;		// state code
+				std::string _name;		// state name
+			};
+
+			// state values
+			const std::vector<StateId> _stateIds = // map containing the state codes and their names
+			{
+				{ "AL","Alabama" },
+				{ "AK","Alaska" },
+				{ "AZ","Arizona" },
+				{ "AR","Arkansas" },
+				{ "CA","California" },
+				{ "CO","Colorado" },
+				{ "CT","Connecticut" },
+				{ "DE","Delaware" },
+				{ "FL","Florida" },
+				{ "GA","Georgia" },
+				{ "HI","Hawaii" },
+				{ "ID","Idaho" },
+				{ "IL","Illinois" },
+				{ "IN","Indiana" },
+				{ "IA","Iowa" },
+				{ "KS","Kansas" },
+				{ "KY","Kentucky" },
+				{ "LA","Louisiana" },
+				{ "ME","Maine" },
+				{ "MD","Maryland" },
+				{ "MA","Massachusetts" },
+				{ "MI","Michigan" },
+				{ "MN","Minnesota" },
+				{ "MS","Mississippi" },
+				{ "MO","Missouri" },
+				{ "MT","Montana" },
+				{ "NE","Nebraska" },
+				{ "NV","Nevada" },
+				{ "NH","New Hampshire" },
+				{ "NJ","New Jersey" },
+				{ "NM","New Mexico" },
+				{ "NY","New York" },
+				{ "NC","North Carolina" },
+				{ "ND","North Dakota" },
+				{ "OH","Ohio" },
+				{ "OK","Oklahoma" },
+				{ "OR","Oregon" },
+				{ "PA","Pennsylvania" },
+				{ "RI","Rhode Island" },
+				{ "SC","South Carolina" },
+				{ "SD","South Dakota" },
+				{ "TN","Tennessee" },
+				{ "TX","Texas" },
+				{ "UT","Utah" },
+				{ "VT","Vermont" },
+				{ "VA","Virginia" },
+				{ "WA","Washington" },
+				{ "WV","West Virginia" },
+				{ "WI","Wisconsin" },
+				{ "WY","Wyoming" },
+				{ "DC","District of Columbia" },
+				{ "GU","Guam"},
+				{ "VI","Virgin Islands" },
+				{ "AS", "American Samoa" },
+				{ "PR", "Puerto Rico" },
+			};
+		};
+
+		// implement state lookup constructor
+		StateLookup::StateLookup() {
+			// function to add the value to the lookup map
+			// perform mapping and transform here so it's done once at construction
+			auto addToMap = [&](auto key, auto data) {
+				if (!key.empty()) {
+					// convert the key to lowercase and add to the map
+					// supports case-insensitive lookup
+					for ( auto & c : key ) { 
+						c = std::tolower(c, _locale);
+					}
+					// add to map
+					_map[key] = data;
+				}
+			};
+
+			// for each state id, add a mapping that will be used to locate the state name
+			for (const auto & stateId : _stateIds) {
+				addToMap(stateId._code, &stateId._name);  // map case insensitive code to actual name
+				addToMap(stateId._name, &stateId._name);  // map case insensitive name to actual name
+			}
+		}
+	}
+
 
 	// constructors
 	Address::Address(std::string   street,
@@ -70,127 +176,36 @@ namespace Addresses {
 	* Modifier section
 	*****************************/
 	Address &   Address::street(std::string     numbersAndName) noexcept {
-		_street = numbersAndName;
+		_street = std::move(numbersAndName);
 
 		return *this;
 	}
 	Address &   Address::city(std::string     name) noexcept {
-		_city = name;
+		_city = std::move(name);
 
 		return *this;
 	}
 	// Must be a valid two digit code, state name, or standard state abbreviation
 	Address &   Address::state(std::string     code) {
-
-		// map containing the state codes and their names
-		const std::map<std::string, std::string> states = 
-		{
-			{ "AL","Alabama" },
-			{ "AK","Alaska" },
-			{ "AZ","Arizona" },
-			{ "AR","Arkansas" },
-			{ "CA","California" },
-			{ "CO","Colorado" },
-			{ "CT","Connecticut" },
-			{ "DE","Delaware" },
-			{ "FL","Florida" },
-			{ "GA","Georgia" },
-			{ "HI","Hawaii" },
-			{ "ID","Idaho" },
-			{ "IL","Illinois" },
-			{ "IN","Indiana" },
-			{ "IA","Iowa" },
-			{ "KS","Kansas" },
-			{ "KY","Kentucky" },
-			{ "LA","Louisiana" },
-			{ "ME","Maine" },
-			{ "MD","Maryland" },
-			{ "MA","Massachusetts" },
-			{ "MI","Michigan" },
-			{ "MN","Minnesota" },
-			{ "MS","Mississippi" },
-			{ "MO","Missouri" },
-			{ "MT","Montana" },
-			{ "NE","Nebraska" },
-			{ "NV","Nevada" },
-			{ "NH","New Hampshire" },
-			{ "NJ","New Jersey" },
-			{ "NM","New Mexico" },
-			{ "NY","New York" },
-			{ "NC","North Carolina" },
-			{ "ND","North Dakota" },
-			{ "OH","Ohio" },
-			{ "OK","Oklahoma" },
-			{ "OR","Oregon" },
-			{ "PA","Pennsylvania" },
-			{ "RI","Rhode Island" },
-			{ "SC","South Carolina" },
-			{ "SD","South Dakota" },
-			{ "TN","Tennessee" },
-			{ "TX","Texas" },
-			{ "UT","Utah" },
-			{ "VT","Vermont" },
-			{ "VA","Virginia" },
-			{ "WA","Washington" },
-			{ "WV","West Virginia" },
-			{ "WI","Wisconsin" },
-			{ "WY","Wyoming" },
-			{ "DC","District of Columbia" },
-		};
-
-		// conversion functions
-		auto toupper = [](char c) {
-			return std::toupper(c, std::locale());
-		};
-		auto tolower = [](char c) {
-			return std::tolower(c, std::locale());
-		};
-
-		// if the length is 2, it's an abbreviation. Look it up in the map
-		if (code.length() == 2) {
-			// convert to uppercase -- supports input such as "Wa" or "wa"
-			std::transform(code.begin(), code.end(), code.begin(), toupper);
-
-			std::map<std::string, std::string>::const_iterator itr = states.find(code);
-
-			// if the key was found
-			if (itr != states.cend()) {
-				_state = itr->second;
-			}
-			// throw an exception
-			else {
-				throw StateCodeException("State abbreviation not valid", __LINE__, __func__, __FILE__);
-			}
+		// state lookup class instance
+		static const StateLookup states;
+		// convert input to lowercase
+		for (auto & c : code) {
+			c = std::tolower(c, states._locale);
 		}
-		// it's not an abbreviation, look up the long name and make sure it's valid
+
+		// find it in the map
+		auto state = states._map.find(code);
+
+		// if the value was found, set the state
+		if (state != states._map.end() ) {
+			_state = *(state->second); // use the value pulled from the map
+		}
+		// else throw exception
 		else {
-			// convert to first letter capitalized, supporting input such as "WAshington" or "washington"
-			std::transform(code.begin(), code.begin() + 1, code.begin(), toupper);
-			std::transform(code.begin() + 1, code.end(), code.begin() + 1, tolower);
-
-			// function to return whether or not the value matches the function parameter supplied
-			auto nameExists = [code,toupper,tolower](auto value) {
-				// convert the value in map to same format as code
-				std::transform(value.second.begin(), value.second.begin() + 1, value.second.begin(), toupper);
-				std::transform(value.second.begin() + 1, value.second.end(), value.second.begin() + 1, tolower);
-
-				// compare
-				return value.second == code;
-			};
-
-			// find the state in the map
-			std::map<std::string, std::string>::const_iterator itr = std::find_if(states.cbegin(), states.cend(), nameExists);
-
-			// the long name was found in the map
-			if (itr != states.cend()) {
-				_state = itr->second; // use the value pulled from the map
-			}
-			// throw exception
-			else {
-				throw StateCodeException("State name not valid", __LINE__, __func__, __FILE__);
-			}
+			throw StateCodeException("State not valid", __LINE__, __func__, __FILE__);
 		}
-
+		
 		return *this;
 	}
 
@@ -202,7 +217,7 @@ namespace Addresses {
 
 		// if the match is successful, assign it
 		if (std::regex_match(code, zipRegex)) {
-			_zip = code;
+			_zip = std::move(code);
 		}
 		// else, throw exception
 		else {
@@ -281,25 +296,19 @@ namespace Addresses {
 		using StateCodeException = Address::StateCodeException;
 		using ZipCodeException = Address::ZipCodeException;
 
-		// record string
-		std::string record;
+		// address strings
+		std::string street;
+		std::string city;
+		std::string state;
+		std::string zip;
+		
+		// try to get each field from the stream
+		if (std::getline(s, street, Address::FIELD_SEPARATOR) &&
+			std::getline(s, city, Address::FIELD_SEPARATOR) &&
+			std::getline(s, state, Address::FIELD_SEPARATOR) &&
+			std::getline(s, zip, Address::RECORD_SEPARATOR)) {
 
-		// get the record from the stream
-		if (std::getline(s, record, Address::RECORD_SEPARATOR)) {
 			try {
-				// convert record to stream and extract each piece
-				std::stringstream ss(record);
-				std::string street;
-				std::string city;
-				std::string state;
-				std::string zip;
-
-				// get the data from the stream, using the appropriate delimiter
-				std::getline(ss, street, Address::FIELD_SEPARATOR);
-				std::getline(ss, city, Address::FIELD_SEPARATOR);
-				std::getline(ss, state, Address::FIELD_SEPARATOR);
-				std::getline(ss, zip, Address::FIELD_SEPARATOR);
-
 				// construct the object from the supplied data
 				address = Address(street, city, state, zip);
 			}
@@ -308,7 +317,7 @@ namespace Addresses {
 			}
 			catch (ZipCodeException & ex) {
 				throw ZipCodeException(ex, "", __LINE__, __func__, __FILE__);
-			}
+			}							
 		}
 
 		return s;

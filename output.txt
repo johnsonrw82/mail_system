@@ -3,15 +3,15 @@
 1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
 8039 Beach BoulevardBuena ParkCalifornia90620
 
-1014 Vine StreetCincinnatiOhio45202-1100
 1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
-157 S. Howard StreetSpokaneWashington99201
 8039 Beach BoulevardBuena ParkCalifornia90620
+1014 Vine StreetCincinnatiOhio45202-1100
+157 S. Howard StreetSpokaneWashington99201
 
 157 S. Howard StreetSpokaneWashington99201
 1014 Vine StreetCincinnatiOhio45202-1100
-1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
 8039 Beach BoulevardBuena ParkCalifornia90620
+1313 S. Harbor BoulevardAnaheimCalifornia92803-1313
 Success:  runAddressTest
 ================================================================================
 The Kroger Co
@@ -41,15 +41,135 @@ SherlockHolmes
 
 TomBettens
 WaltDisney
+SherlockHolmes
 Skywalker
 BjarneStroustrup
-SherlockHolmes
 
+BjarneStroustrup
+Skywalker
+SherlockHolmes
 WaltDisney
 TomBettens
-BjarneStroustrup
-Skywalker
-SherlockHolmes
 Success:  runEmployeeTest
+================================================================================
+Employee Directory:
+6
+MildredAnderson23456 SW 18th StCheyenneWyoming82001
+SteveBurd189 Fern Hill RoadPleasantonCalifornia94588
+BillGates1835 73rd Ave NEMedinaWashington98039
+MelindaGates1835 73rd Ave NEMedinaWashington98039
+FredJones65 Walnut AveBeavertonOregon97008
+PeterSmith1245 Fake StAustinTexas78701
+
+
+Company Directory:
+8
+1110 W Alameda AveBurbankCalifornia91506Safeway Companies
+5918 Stoneridge Mall RdPleasantonCalifornia94588Safeway Companies
+2600 Cumberland Pkwy SEAtlantaGeorgia30339The Home Depot
+3350 N WoodlawnWichitaKansas67226The Home Depot
+6194 SW Murray BlvdBeavertonOregon97008Safeway Companies
+10120 SE Washington StPortlandOregon97216The Home Depot
+One Microsoft WayRedmondWashington98052Microsoft Corporation
+1740 Fleischli PkwyCheyenneWyoming82001The Home Depot
+
+
+Employee Companies:
+8
+MildredAndersonSafeway Companies
+SteveBurdSafeway Companies
+BillGatesMicrosoft Corporation
+BrianJacobsThe Home Depot
+FredJonesSafeway Companies
+PeterSmithMicrosoft Corporation
+PeterSmithSafeway Companies
+PeterSmithThe Home Depot
+
+BillGates lives at: 1835 73rd Ave NEMedinaWashington98039
+
+These people live at: 1835 73rd Ave NEMedinaWashington98039
+	BillGates
+	MelindaGates
+
+PeterSmith works at:
+	Microsoft Corporation
+	Safeway Companies
+	The Home Depot
+
+Safeway Companies has locations at:
+	1110 W Alameda AveBurbankCalifornia91506
+	5918 Stoneridge Mall RdPleasantonCalifornia94588
+	6194 SW Murray BlvdBeavertonOregon97008
+
+These people work at The Home Depot:
+	BrianJacobs
+	PeterSmith
+
+The names and addresses of the people working at Safeway Companies are:
+	MildredAnderson lives at: 23456 SW 18th StCheyenneWyoming82001
+	SteveBurd lives at: 189 Fern Hill RoadPleasantonCalifornia94588
+	FredJones lives at: 65 Walnut AveBeavertonOregon97008
+	PeterSmith lives at: 1245 Fake StAustinTexas78701
+Success:  testObjectAssociations
+================================================================================
+Employee Directory:
+6
+MildredAnderson23456 SW 18th StCheyenneWyoming82001
+SteveBurd189 Fern Hill RoadPleasantonCalifornia94588
+BillGates1835 73rd Ave NEMedinaWashington98039
+MelindaGates1835 73rd Ave NEMedinaWashington98039
+FredJones65 Walnut AveBeavertonOregon97008
+PeterSmith1245 Fake StAustinTexas78701
+
+
+Company Directory:
+8
+1110 W Alameda AveBurbankCalifornia91506Safeway Companies
+5918 Stoneridge Mall RdPleasantonCalifornia94588Safeway Companies
+2600 Cumberland Pkwy SEAtlantaGeorgia30339The Home Depot
+3350 N WoodlawnWichitaKansas67226The Home Depot
+6194 SW Murray BlvdBeavertonOregon97008Safeway Companies
+10120 SE Washington StPortlandOregon97216The Home Depot
+One Microsoft WayRedmondWashington98052Microsoft Corporation
+1740 Fleischli PkwyCheyenneWyoming82001The Home Depot
+
+
+Employee Companies:
+8
+MildredAndersonSafeway Companies
+SteveBurdSafeway Companies
+BillGatesMicrosoft Corporation
+BrianJacobsThe Home Depot
+FredJonesSafeway Companies
+PeterSmithMicrosoft Corporation
+PeterSmithSafeway Companies
+PeterSmithThe Home Depot
+
+BillGates lives at: 1835 73rd Ave NEMedinaWashington98039
+
+These people live at: 1835 73rd Ave NEMedinaWashington98039
+	BillGates
+	MelindaGates
+
+PeterSmith works at:
+	Microsoft Corporation
+	Safeway Companies
+	The Home Depot
+
+Safeway Companies has locations at:
+	1110 W Alameda AveBurbankCalifornia91506
+	5918 Stoneridge Mall RdPleasantonCalifornia94588
+	6194 SW Murray BlvdBeavertonOregon97008
+
+These people work at The Home Depot:
+	BrianJacobs
+	PeterSmith
+
+The names and addresses of the people working at Safeway Companies are:
+	MildredAnderson lives at: 23456 SW 18th StCheyenneWyoming82001
+	SteveBurd lives at: 189 Fern Hill RoadPleasantonCalifornia94588
+	FredJones lives at: 65 Walnut AveBeavertonOregon97008
+	PeterSmith lives at: 1245 Fake StAustinTexas78701
+Success:  testPointerAssociations
 ================================================================================
 Success:  main

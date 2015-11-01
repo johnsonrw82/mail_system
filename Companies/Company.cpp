@@ -88,11 +88,15 @@ namespace Companies {
 	 **********************/
 	// equal to
 	bool operator==(const Company & lhs, const Company & rhs) {
-		return lhs.name() == rhs.name();
+		return (&lhs == &rhs) || (lhs._name == rhs._name);
 	}
 	// less than
 	bool operator< (const Company & lhs, const Company & rhs) {
-		return lhs.name() < rhs.name();
+		if (&lhs == &rhs) {
+			return false;
+		}
+
+		return lhs._name < rhs._name;
 	}
 	// not equal to
 	bool operator!=(const Company & lhs, const Company & rhs) {
@@ -100,14 +104,14 @@ namespace Companies {
 	}
 	// greater than
 	bool operator> (const Company & lhs, const Company & rhs) {
-		return lhs.name() > rhs.name();
+		return rhs < lhs;
 	}
 	// less than or equal
 	bool operator<=(const Company & lhs, const Company & rhs) {
-		return lhs.name() <= rhs.name();
+		return !(rhs < lhs);
 	}
 	// greater than or equal
 	bool operator>=(const Company & lhs, const Company & rhs) {
-		return lhs.name() >= rhs.name();
+		return !(lhs < rhs);
 	}
 }

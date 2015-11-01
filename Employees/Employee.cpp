@@ -117,13 +117,20 @@ namespace Employees {
 	**********************/
 	// equal to
 	bool operator==(const Employee & lhs, const Employee & rhs) {
-		return lhs.lastName() == rhs.lastName() &&
-			lhs.firstName() == rhs.firstName();
+		return (&lhs == &rhs) ||
+			(lhs._firstName == rhs._firstName &&
+				lhs._lastName == rhs._lastName);
 	}
 	// less than
 	bool operator< (const Employee & lhs, const Employee & rhs) {
-		return lhs.lastName() < rhs.lastName() &&
-			lhs.firstName() < rhs.firstName();
+		int result = 0;
+
+		if (&lhs == &rhs) {
+			return false;
+		}
+
+		if ((result = lhs._lastName.compare(rhs._lastName)) != 0) { return result < 0; }
+		return lhs._firstName < rhs._firstName;
 	}
 	// not equal to
 	bool operator!=(const Employee & lhs, const Employee & rhs) {
@@ -131,18 +138,15 @@ namespace Employees {
 	}
 	// greater than
 	bool operator> (const Employee & lhs, const Employee & rhs) {
-		return lhs.lastName() > rhs.lastName() &&
-			lhs.firstName() > rhs.firstName();
+		return rhs < lhs;
 	}
 	// less than or equal
 	bool operator<=(const Employee & lhs, const Employee & rhs) {
-		return lhs.lastName() <= rhs.lastName() &&
-			lhs.firstName() <= rhs.firstName();
+		return !(rhs < lhs);
 	}
 	// greater than or equal
 	bool operator>=(const Employee & lhs, const Employee & rhs) {
-		return lhs.lastName() >= rhs.lastName() &&
-			lhs.firstName() >= rhs.firstName();
+		return !(lhs < rhs);
 	}
 
 	/**********************

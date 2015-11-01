@@ -344,10 +344,11 @@ namespace Addresses {
 	 **********************/
 	// equals
 	bool operator==(const Address & lhs, const Address & rhs) {
-		return lhs.state() == rhs.state() &&
-			lhs.city() == rhs.city() &&
-			lhs.zipCode().substr(0,5) == rhs.zipCode().substr(0,5) &&
-			lhs.street() == rhs.street();
+		return &lhs == &rhs ||
+			(lhs._state == rhs._state &&
+				lhs._city == rhs._city &&
+				lhs._zip.substr(0, 5) == rhs._zip.substr(0, 5) &&
+				lhs._street == rhs._street);
 	}
 
 	// not equal
@@ -356,34 +357,35 @@ namespace Addresses {
 	}
 
 	// less than
+	// fixed this because the old implementation was causing problems when inserting into a set
 	bool operator< (const Address & lhs, const Address & rhs) {
-		return lhs.state() < rhs.state() &&
-			lhs.city() < rhs.city() &&
-			lhs.zipCode().substr(0, 5) < rhs.zipCode().substr(0, 5) &&
-			lhs.street() < rhs.street();
+		int result = 0;
+
+		// self compare (same address)
+		if (&lhs == &rhs) {
+			return false;
+		}
+
+		// use of compare function will return a value corresponding to the equality
+		else if ( (result = lhs._state.compare(rhs._state)) != 0) return result < 0;
+		else if ((result = lhs._city.compare(rhs._city)) != 0) return result < 0;
+		else if ((result = lhs._zip.compare(0,5,rhs._zip, 0, 5)) != 0) return result < 0;
+		
+		return lhs._street < rhs._street;
 	}
 
 	// greater than
 	bool operator> (const Address & lhs, const Address & rhs) {
-		return lhs.state() > rhs.state() &&
-			lhs.city() > rhs.city() &&
-			lhs.zipCode().substr(0, 5) > rhs.zipCode().substr(0, 5) &&
-			lhs.street() > rhs.street();
+		return (rhs < lhs);
 	}
 
 	// less than or equal
 	bool operator<=(const Address & lhs, const Address & rhs) {
-		return lhs.state() <= rhs.state() &&
-			lhs.city() <= rhs.city() &&
-			lhs.zipCode().substr(0, 5) <= rhs.zipCode().substr(0, 5) &&
-			lhs.street() <= rhs.street();
+		return !(rhs < lhs);
 	}
 
 	// greater than or equal
 	bool operator>=(const Address & lhs, const Address & rhs) {
-		return lhs.state() >= rhs.state() &&
-			lhs.city() >= rhs.city() &&
-			lhs.zipCode().substr(0, 5) >= rhs.zipCode().substr(0, 5) &&
-			lhs.street() >= rhs.street();
+		return !(lhs < rhs);
 	}
 }

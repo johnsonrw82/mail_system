@@ -75,8 +75,17 @@ namespace Utilities
 
 	void Associations<Left, Right, Policy>::remove(const Left & left, const Right & right)
 	{
-#ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-#endif
+		// find the key in the map
+		auto & leftKey = this->_m2mMap.find(left);
+
+		// left key was found
+		if (leftKey != this->_m2mMap.end()) {
+			leftKey->second.erase(right); // erase the right
+			// if no other associations remain, remove the key itself
+			if (leftKey->second.empty()) {
+				this->_m2mMap.erase(leftKey);
+			}
+		}
 	}
 
 
@@ -122,7 +131,7 @@ namespace Utilities
 	template< class Left, class Right, template <class, class> class Policy >
 
 	void Associations<Left, Right, Policy>::removeLeft(const Left & left)
-	{
+	{		
 		this->_m2mMap.erase(left);
 	}
 
@@ -295,8 +304,9 @@ namespace Utilities
 		// for each pair
 		for (const auto & left : theMap._m2mMap)  for (const auto & right : left.second)
 		{
-#ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-#endif
+			// write out the association to the stream
+			s << left.first << theMap.FIELD_SEPARATOR <<
+				right << theMap.RECORD_SEPARATOR << '\n';
 		}
 
 		return s;
@@ -424,9 +434,9 @@ namespace Utilities
 		bool operator()(T * lhs, T * rhs) const  // Note: Template argument types of const T* are a closer match to const T& (below).
 		{
 			return *lhs < *rhs;
-		}                    //       So don't be tempted to make this this signature be pointers to constant T.
+		}  //       So don't be tempted to make this this signature be pointers to constant T.
 
-// When T is not a pointer type, compare objects directly
+	    // When T is not a pointer type, compare objects directly
 		template <class T>
 		bool operator()(const T & lhs, const T & rhs) const
 		{

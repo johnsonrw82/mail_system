@@ -154,10 +154,10 @@ namespace Utilities
       {
         // Create an output stream and turn on exceptions for the database file.
         std::ofstream outFile;
-        Utilities::SetStreamExState sstate( outFile, std::ios::trunc );  // overwrite
+        Utilities::SetStreamExState sstate( outFile );  // overwrite
 
 		// open the output stream
-		outFile.open(destinationFileName);
+		outFile.open(destinationFileName, std::ios::trunc);
 
 		for (const auto & record : _dataBase) {
 			outFile << record.first << record.second << '\n'; // append newline so that it may be easier to read the data

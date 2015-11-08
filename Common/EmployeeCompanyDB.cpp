@@ -1,3 +1,9 @@
+/**
+* File: EmployeeCompanyDB.cpp
+* Author: Ryan Johnson
+* Description: source file containing the data file definition for an employee-company database
+*/
+
 #include "Common/EmployeeCompanyDB.hpp"
 
 namespace Common {

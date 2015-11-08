@@ -1,3 +1,9 @@
+/**
+* File: AddressCompanyDB.hpp
+* Author: Ryan Johnson
+* Description: Header file for the database type alias for storing address-company associations
+*/
+
 #ifndef COMMON_Address_Company_DB_hpp
 #define COMMON_Address_Company_DB_hpp
 

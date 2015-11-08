@@ -1,3 +1,9 @@
+/**
+ * File: CompanyDB.hpp
+ * Author: Ryan Johnson
+ * Description: Header file for the database type alias for storing companies
+ */
+
 #ifndef COMPANIES_Company_DB_hpp
 #define COMPANIES_Company_DB_hpp
 

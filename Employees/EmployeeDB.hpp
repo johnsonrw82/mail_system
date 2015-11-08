@@ -1,3 +1,9 @@
+/**
+* File: EmployeeDB.hpp
+* Author: Ryan Johnson
+* Description: Header file for the database type alias for storing employees
+*/
+
 #ifndef EMPLOYEES_Employee_DB_hpp
 #define EMPLOYEES_Employee_DB_hpp
 

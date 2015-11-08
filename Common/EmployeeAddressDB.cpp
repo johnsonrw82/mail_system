@@ -1,3 +1,9 @@
+/**
+* File: EmployeeAddressDB.cpp
+* Author: Ryan Johnson
+* Description: source file containing the data file definition for an employee-address database
+*/
+
 #include "Common/EmployeeAddressDB.hpp"
 
 namespace Common {

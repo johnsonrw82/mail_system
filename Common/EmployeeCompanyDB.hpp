@@ -1,3 +1,9 @@
+/**
+* File: EmployeeCompanyDB.hpp
+* Author: Ryan Johnson
+* Description: Header file for the database type alias for storing employee-company associations
+*/
+
 #ifndef COMMON_Employee_Company_DB_hpp
 #define COMMON_Employee_Company_DB_hpp
 

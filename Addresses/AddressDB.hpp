@@ -1,3 +1,9 @@
+/**
+* File: AddressDB.hpp
+* Author: Ryan Johnson
+* Description: Header file for the database type alias for storing addresses
+*/
+
 #ifndef ADDRESSES_Address_DB_hpp
 #define ADDRESSES_Address_DB_hpp
 

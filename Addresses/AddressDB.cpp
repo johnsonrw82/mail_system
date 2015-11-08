@@ -1,3 +1,9 @@
+/**
+* File: AddressDB.cpp
+* Author: Ryan Johnson
+* Description: source file containing the data file definition for an address database
+*/
+
 #include "Addresses/AddressDB.hpp"
 
 namespace Addresses {

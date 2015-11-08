@@ -172,4 +172,41 @@ The names and addresses of the people working at Safeway Companies are:
 	PeterSmith lives at: 1245 Fake StAustinTexas78701
 Success:  testPointerAssociations
 ================================================================================
+
+BillGates lives at: 1835 73rd Ave NEMedinaWashington98039
+
+These people live at: 1835 73rd Ave NEMedinaWashington98039
+	BillGates
+	MelindaGates
+
+PeterSmith works at:
+	The Home Depot
+	Safeway Companies
+	Microsoft Corporation
+	The Home Depot
+	Safeway Companies
+	Microsoft Corporation
+
+Safeway Companies has locations at:
+	5918 Stoneridge Mall RdPleasantonCalifornia94588
+	1110 W Alameda AveBurbankCalifornia91506
+	6194 SW Murray BlvdBeavertonOregon97008
+
+These people work at The Home Depot:
+	PeterSmith
+	BrianJacobs
+
+The names and addresses of the people working at Safeway Companies are:
+	PeterSmith lives at: 1245 Fake StAustinTexas78701
+	FredJones lives at: 65 Walnut AveBeavertonOregon97008
+	MildredAnderson lives at: 23456 SW 18th StCheyenneWyoming82001
+	SteveBurd lives at: 189 Fern Hill RoadPleasantonCalifornia94588
+Success:  testDbOperations1
+================================================================================
+
+SimonCooper now works for:
+	Another Fabulous Company, Inc.
+	This Place Isn't as Good, LLC
+Success:  testDbOperations2
+================================================================================
 Success:  main

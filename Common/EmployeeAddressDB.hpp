@@ -1,3 +1,9 @@
+/**
+* File: EmployeeAddressDB.hpp
+* Author: Ryan Johnson
+* Description: Header file for the database type alias for storing employee-address associations
+*/
+
 #ifndef COMMON_Employee_Address_DB_hpp
 #define COMMON_Employee_Address_DB_hpp
 

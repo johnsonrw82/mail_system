@@ -61,9 +61,7 @@ namespace Utilities
   ///////////////////////////////////  Class attributes  //////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   template< class Data, const char sourceFileName[], const char destinationFileName[] >
-  
-  #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-  #endif
+  typename Database<Data, sourceFileName, destinationFileName>::Key Database<Data, sourceFileName, destinationFileName>::_nextAvail = 0L;
 
 
 
@@ -80,8 +78,16 @@ namespace Utilities
 
     try
     {
-      #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-      #endif
+		// open the file using the supplied source file name
+		inFile.open(sourceFileName);
+
+		// load each key/data pair from the stream
+		Key key;
+		Data data;
+		while (inFile >> std::ws >> key >> data) { // std::ws will allow us to ignore the newline that may be present in the file
+			insert(key, data);  // insert into the database
+		}
+
     }
 
     // g++ under MinGW64 throws the wrong exception, so let's catch the exception a little higher in the exception tree as a work
@@ -128,8 +134,10 @@ namespace Utilities
   
   Database< Data, sourceFileName, destinationFileName > & Database< Data, sourceFileName, destinationFileName >::getInstance()
   {
-    #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-    #endif
+	  // create a static instance of the database given the template parameters
+	  static Database<Data, sourceFileName, destinationFileName> instance;
+	  // return instance
+	  return instance;
   }
 
 
@@ -141,14 +149,19 @@ namespace Utilities
   {
     try
     {
+	  // if the database is dirty (IE, there have been modifications), need to take a snapshot
       if( _dirty )
       {
         // Create an output stream and turn on exceptions for the database file.
         std::ofstream outFile;
-        Utilities::SetStreamExState sstate( outFile );
+        Utilities::SetStreamExState sstate( outFile, std::ios::trunc );  // overwrite
 
-        #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-        #endif
+		// open the output stream
+		outFile.open(destinationFileName);
+
+		for (const auto & record : _dataBase) {
+			outFile << record.first << record.second << '\n'; // append newline so that it may be easier to read the data
+		}
       }
     }
 
@@ -159,6 +172,8 @@ namespace Utilities
       // Error strategy needs more work - stubbed for now
       throw IOFailureException(ex, "ERROR: Unexpected std::ios::failure in database \""s + typeid(Data).name() + "\"", __LINE__, __func__, __FILE__);
     }
+
+	_dirty = false; // snapshot taken, set bit to false
   }
 
 
@@ -213,8 +228,12 @@ namespace Utilities
   
   typename Database< Data, sourceFileName, destinationFileName >::Key  Database< Data, sourceFileName, destinationFileName >::insert( const Data & data )
   {
-    #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-    #endif
+	  // get the next available key
+	  auto key = ++_nextAvail;
+	  // insert
+	  insert(key, data);
+	  // return the key
+	  return key;
   }
 
 
@@ -224,8 +243,12 @@ namespace Utilities
   
   void Database< Data, sourceFileName, destinationFileName >::insert( const Key & key, const Data & data )
   {
-    #ifndef TO_DO_BY_STUDENT  // This section to be completed by the student
-    #endif
+	  // use the [] operator to insert into the database
+	  _dataBase[key] = data;
+	  if (_nextAvail < key) {
+		  _nextAvail = key; // set the next available key to the one just inserted
+	  }
+	  _dirty = true; // set the dirty flag
   }
 
 

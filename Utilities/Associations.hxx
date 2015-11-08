@@ -76,7 +76,7 @@ namespace Utilities
 	void Associations<Left, Right, Policy>::remove(const Left & left, const Right & right)
 	{
 		// find the key in the map
-		auto & leftKey = this->_m2mMap.find(left);
+		auto leftKey = this->_m2mMap.find(left);
 
 		// left key was found
 		if (leftKey != this->_m2mMap.end()) {

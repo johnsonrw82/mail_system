@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include <set>
+#include <vector>
 
 #include "MailSystem/Document.hpp"
 #include "Employees/EmployeeDB.hpp"
@@ -30,15 +31,12 @@ namespace MailSystem {
 			// exceptions
 			struct MessageExceptions : Utilities::AbstractException<> { using AbstractException::AbstractException; };
 			struct SymmetricSyncException : MessageExceptions { using MessageExceptions::MessageExceptions; };
-
+			struct AttachmentNotFoundException : MessageExceptions { using MessageExceptions::MessageExceptions; };
 
 			// nested class Envelope
 			class Envelope {
 				friend std::ostream & operator << (std::ostream & s, const Envelope & envelope);
 				friend std::istream & operator >> (std::istream & s, Envelope & envelope);
-
-				friend bool operator==(const Envelope & lhs, const Envelope & rhs);
-				friend bool operator< (const Envelope & lhs, const Envelope & rhs);
 
 				public:
 					// exceptions
@@ -82,9 +80,9 @@ namespace MailSystem {
 			Message &					addBCC(const RecipientList & bcc);									// add to the bcc list
 			Message &					addCC(const RecipientList & cc);									// add to the cc list
 			Message &					addTO(const RecipientList & to);									// add to the to list
-			void						address(EmployeeID from, RecipientList to);							// add to the to list/from employee ID
-			void						address(EmployeeID from, RecipientList to, RecipientList cc);		// add to the to list/from ID, with CC
-			void						address(EmployeeID from, RecipientList to, RecipientList cc, RecipientList bcc);	// add to the to list/from ID, with CC and BCC
+			void						address(EmployeeID from, RecipientList to);							// set to the to list/from employee ID
+			void						address(EmployeeID from, RecipientList to, RecipientList cc);		// set to the to list/from ID, with CC
+			void						address(EmployeeID from, RecipientList to, RecipientList cc, RecipientList bcc);	// set the the to list/from ID, with CC and BCC
 			void						address(Envelope envelope);											// set address based on envelope
 			Document 					attachment(const std::string & name) const;							// return a copy of the attachment with given name
 			Document &					attachment(const std::string & name);								// return attachment reference with given name

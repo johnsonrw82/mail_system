@@ -111,7 +111,6 @@ The names and addresses of the people working at Safeway Companies are:
 	FredJones lives at: 65 Walnut AveBeavertonOregon97008
 	PeterSmith lives at: 1245 Fake StAustinTexas78701
 Success:  testObjectAssociations
-================================================================================
 Employee Directory:
 6
 MildredAnderson23456 SW 18th StCheyenneWyoming82001
@@ -203,10 +202,305 @@ The names and addresses of the people working at Safeway Companies are:
 	SteveBurd lives at: 189 Fern Hill RoadPleasantonCalifornia94588
 Success:  testDbOperations1
 ================================================================================
+Tom's Sent Items:
 
-SimonCooper now works for:
-	Another Fabulous Company, Inc.
-	This Place Isn't as Good, LLC
-Success:  testDbOperations2
+Hello Sue,
+I just wanted to let you know that you're fired.
+See attached performance report.
+I'm too chicken to do this in person, so you get an email. Sorry. :(
+
+With attachments:
+
+Attachment name: Performance Report
+Customer Relations = POOR
+Employee Contributions = POOR
+Project Manangement = POOR
+Hygeine = FAIR
+
+Tom's Received Items:
+
+Sue's Sent Items:
+
+Sue's Received Items:
+
+Hello Sue,
+I just wanted to let you know that you're fired.
+See attached performance report.
+I'm too chicken to do this in person, so you get an email. Sorry. :(
+
+With attachments:
+
+Attachment name: Performance Report
+Customer Relations = POOR
+Employee Contributions = POOR
+Project Manangement = POOR
+Hygeine = FAIR
+
+Rob's Sent Items:
+
+Rob's Received Items:
+
+Hello Sue,
+I just wanted to let you know that you're fired.
+See attached performance report.
+I'm too chicken to do this in person, so you get an email. Sorry. :(
+
+With attachments:
+
+Attachment name: Performance Report
+Customer Relations = POOR
+Employee Contributions = POOR
+Project Manangement = POOR
+Hygeine = FAIR
+
+Success:  testMailSystemUC1
+================================================================================
+Tom's message:
+161261180Hello Sue,
+I just wanted to let you know that you're fired.
+See attached performance report.
+I'm too chicken to do this in person, so you get an email. Sorry. :(
+1Performance ReportCustomer Relations = POOR
+Employee Contributions = POOR
+Project Manangement = POOR
+Hygeine = FAIR
+
+Success:  testMailSystemUC2
+================================================================================
+PeterSmith's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+BillGates's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+MelindaGates's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+BrianJacobs's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+FredJones's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+MildredAnderson's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+SteveBurd's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+Tom's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+Rob's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+PeterSmith's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+BillGates's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+MelindaGates's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+BrianJacobs's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+FredJones's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+MildredAnderson's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+SteveBurd's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+Sue's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+Bill's Inbox contains:
+This is my shopping list:
+- eggs
+- ointment
+- vanilla wafers
+- frosting
+
+You all need to stop sleeping at work.
+
+I like turtles
+
+Disgregard that last message, someone hacked my account.
+
+Success:  testMailSystemUC3
 ================================================================================
 Success:  main

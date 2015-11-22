@@ -15,6 +15,7 @@
 #include <utility>
 #include <cstdlib>
 #include <algorithm>
+#include <stdexcept>
 
 #include "MailSystem/Message.hpp"
 #include "MailSystem/MessageDB.hpp"
@@ -25,14 +26,13 @@ namespace MailSystem {
 	* Message
 	*********************************************************************/
 	// constructors
-	Message::Message(Document body)								: Message(Envelope(), body) {}  // self delegation
-	Message::Message(Envelope envelope)							: Message(envelope, Document()) {}  // self delegation
+	Message::Message(Document body)								: Message(Envelope(), std::move(body)) {}						// self delegation
+	Message::Message(Envelope envelope)							: Message(std::move(envelope), Document()) {}					// self delegation
 	Message::Message(Envelope envelope, Document body)			:
-																	_attachments(std::unordered_map<std::string, Document>()), 
 																	_body(std::move(body)), 
-																	_envelope(std::move(envelope)) {}
-	Message::Message(Envelope envelope, std::string body)		: Message(envelope, Document(body)) {}  // self delegation
-	Message::Message(std::string body)							: Message(Document(body)) {}			// self delegation
+																	_envelope(std::move(envelope)) {}							// initialize each property
+	Message::Message(Envelope envelope, std::string body)		: _body(std::move(body)), _envelope(std::move(envelope)) {}		// initialize each property
+	Message::Message(std::string body)							: _body(std::move(body)) {}										// initialize property
 
 	// add an attachment with given name
 	void Message::addAttachment(const std::string & name, Document attachment) {
@@ -58,15 +58,17 @@ namespace MailSystem {
 
 		return *this;
 	}
-	// add to the to list/from employee ID
-	void Message::address(EmployeeID from, RecipientList to) {
-		address(from, to, RecipientList(), RecipientList());
+	// set the to list/from employee ID
+	void Message::address(EmployeeID from, RecipientList to) {		
+		_envelope.from = std::move(from);
+		_envelope.to = std::move(to);
 	}
-	// add to the to list/from ID, with CC
+	// set the to list/from ID, with CC
 	void Message::address(EmployeeID from, RecipientList to, RecipientList cc) {
-		address(from, to, cc, RecipientList());
+		address(from, to);
+		_envelope.cc = std::move(cc);
 	}
-	// add to the to list/from ID, with CC and BCC
+	// set the to list/from ID, with CC and BCC
 	void Message::address(EmployeeID from, RecipientList to, RecipientList cc, RecipientList bcc) {		
 		address(Envelope(from, to, cc, bcc));
 	}
@@ -76,18 +78,32 @@ namespace MailSystem {
 	}
 	// return a copy of the attachment with given name
 	Document Message::attachment(const std::string & name) const {
-		return _attachments.at(name);
+		try {
+			// if the name doesn't exist, catch and re-throw exception
+			return _attachments.at(name);
+		}
+		catch (std::out_of_range & ex) {
+			throw AttachmentNotFoundException(ex, "Attachment not found with given name", __LINE__, __func__, __FILE__);
+		}
 	}	
 	// return attachment reference with given name
 	Document & Message::attachment(const std::string & name) {
-		return _attachments[name];
+		try {
+			// if the name doesn't exist, catch and re-throw exception
+			return _attachments.at(name);
+		}
+		catch (std::out_of_range & ex) {
+			throw AttachmentNotFoundException(ex, "Attachment not found with given name", __LINE__, __func__, __FILE__);
+		}
 	}
 	// return a vector of names for all attachments
 	std::vector<std::string> Message::attachments() {
-		std::vector<std::string> result;
+		std::vector<std::string> result(_attachments.size());   // preallocate space for each attachment
+		std::vector<std::string>::size_type i = 0U;
 
+		// add each attachment to the vector
 		for (const auto & attachment : _attachments) {
-			result.push_back(attachment.first);
+			result[i++] = attachment.first;
 		}
 
 		return result;
@@ -95,8 +111,7 @@ namespace MailSystem {
 
 	// return a copy of the body
 	Document Message::body() const {
-		Document copy(_body);
-		return copy;
+		return _body;
 	}
 	// return a reference to the body
 	Document & Message::body() {
@@ -104,8 +119,7 @@ namespace MailSystem {
 	}
 	// return a copy of the envelope for this message
 	Message::Envelope Message::envelope() const {
-		Envelope copy(_envelope);
-		return copy;
+		return _envelope;
 	}
 	// return a reference to the envelope for this message
 	Message::Envelope & Message::envelope() {
